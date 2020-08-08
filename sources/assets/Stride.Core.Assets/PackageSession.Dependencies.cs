@@ -98,7 +98,14 @@ namespace Stride.Core.Assets
             // Load some informations about the project
             try
             {
-                var msProject = VSProjectHelper.LoadProject(project.FullPath, loadParameters.BuildConfiguration, extraProperties: new Dictionary<string, string> { { "SkipInvalidConfigurations", "true" } });
+                var extraProperties = new Dictionary<string, string>();
+                if (loadParameters.ExtraCompileProperties != null)
+                {
+                    foreach (var extraProperty in loadParameters.ExtraCompileProperties)
+                        extraProperties.Add(extraProperty.Key, extraProperty.Value);
+                }
+                extraProperties.Add("SkipInvalidConfigurations", "true");
+                var msProject = VSProjectHelper.LoadProject(project.FullPath, loadParameters.BuildConfiguration, extraProperties: extraProperties);
                 try
                 {
                     var packageVersion = msProject.GetPropertyValue("PackageVersion");
@@ -106,6 +113,9 @@ namespace Stride.Core.Assets
                         package.Meta.Version = new PackageVersion(packageVersion);
 
                     project.TargetPath = msProject.GetPropertyValue("TargetPath");
+                    project.AssemblyProcessorSerializationHashFile = msProject.GetProperty("StrideAssemblyProcessorSerializationHashFile")?.EvaluatedValue;
+                    if (project.AssemblyProcessorSerializationHashFile != null)
+                        project.AssemblyProcessorSerializationHashFile = Path.Combine(Path.GetDirectoryName(project.FullPath), project.AssemblyProcessorSerializationHashFile);
                     package.Meta.Name = (msProject.GetProperty("PackageId") ?? msProject.GetProperty("AssemblyName"))?.EvaluatedValue ?? package.Meta.Name;
 
                     var outputType = msProject.GetPropertyValue("OutputType");
@@ -397,13 +407,19 @@ namespace Stride.Core.Assets
                                 // Build list of assemblies
                                 foreach (var a in targetLibrary.RuntimeAssemblies)
                                 {
-                                    var assemblyFile = Path.Combine(libraryPath, a.Path.Replace('/', Path.DirectorySeparatorChar));
-                                    projectDependency.Assemblies.Add(assemblyFile);
+                                    if (!a.Path.EndsWith("_._"))
+                                    {
+                                        var assemblyFile = Path.Combine(libraryPath, a.Path.Replace('/', Path.DirectorySeparatorChar));
+                                        projectDependency.Assemblies.Add(assemblyFile);
+                                    }
                                 }
                                 foreach (var a in targetLibrary.RuntimeTargets)
                                 {
-                                    var assemblyFile = Path.Combine(libraryPath, a.Path.Replace('/', Path.DirectorySeparatorChar));
-                                    projectDependency.Assemblies.Add(assemblyFile);
+                                    if (!a.Path.EndsWith("_._"))
+                                    {
+                                        var assemblyFile = Path.Combine(libraryPath, a.Path.Replace('/', Path.DirectorySeparatorChar));
+                                        projectDependency.Assemblies.Add(assemblyFile);
+                                    }
                                 }
                             }
                         }
@@ -509,7 +525,7 @@ namespace Stride.Core.Assets
             else
             {
                 // External references were passed, but the top level project wasn't found.
-                // This is always due to an internal issue and typically caused by errors 
+                // This is always due to an internal issue and typically caused by errors
                 // building the project closure.
                 throw new InvalidOperationException($"Missing external reference metadata for {_request.Project.Name}");
             }
