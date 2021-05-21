@@ -1,4 +1,4 @@
-// Copyright (c) Stride contributors (https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
+// Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 #if STRIDE_UI_SDL
 using System;
@@ -190,6 +190,11 @@ namespace Stride.Graphics.SDL
                     // Send these events to all the windows
                     Windows.ForEach(x => x.ProcessEvent(e));
                     break;
+                
+                case SDL.SDL_EventType.SDL_DROPTEXT:
+                case SDL.SDL_EventType.SDL_DROPFILE:
+                    ctrl = WindowFromSdlHandle(SDL.SDL_GetWindowFromID(e.drop.windowID));
+                    break;
             }
             ctrl?.ProcessEvent(e);
         }
@@ -230,6 +235,12 @@ namespace Stride.Graphics.SDL
         /// Backup storage for windows of current application.
         /// </summary>
         private static readonly Dictionary<IntPtr, WeakReference<Window>> InternalWindows;
+    
+        public static string Clipboard
+        {
+            get => SDL.SDL_GetClipboardText();
+            set => SDL.SDL_SetClipboardText( value );
+        }
     }
 }
 #endif

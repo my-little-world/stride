@@ -1,4 +1,4 @@
-// Copyright (c) Stride contributors (https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
+// Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 using System;
 using System.Collections.Generic;
@@ -107,6 +107,14 @@ namespace Stride.Shaders.Parser.Mixins
 
             lock (AnalysisLock)
             {
+                // reset error status of mixins so we get the same error messages for each compilation
+                foreach (var mixinInfo in mixinInfos)
+                {
+                    var mixin = mixinInfo.Mixin;
+                    if (mixin.DependenciesStatus == AnalysisStatus.Error || mixin.DependenciesStatus == AnalysisStatus.Cyclic)
+                        mixin.DependenciesStatus = AnalysisStatus.None;
+                }
+
                 foreach (var mixinInfo in mixinInfos)
                     BuildMixinDependencies(mixinInfo);
 

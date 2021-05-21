@@ -1,4 +1,4 @@
-// Copyright (c) Stride contributors (https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
+// Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 
 using System;
@@ -35,17 +35,17 @@ namespace Stride.Input
         /// <summary>
         /// The buttons that have been pressed since the last frame
         /// </summary>
-        IReadOnlySet<int> PressedButtons { get; }
+        Core.Collections.IReadOnlySet<int> PressedButtons { get; }
 
         /// <summary>
         /// The buttons that have been released since the last frame
         /// </summary>
-        IReadOnlySet<int> ReleasedButtons { get; }
+        Core.Collections.IReadOnlySet<int> ReleasedButtons { get; }
 
         /// <summary>
         /// The buttons that are down
         /// </summary>
-        IReadOnlySet<int> DownButtons { get; }
+        Core.Collections.IReadOnlySet<int> DownButtons { get; }
         
         /// <summary>
         /// Retrieves the state of a single axis

@@ -1,4 +1,4 @@
-// Copyright (c) Stride contributors (https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
+// Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 
 using System;
@@ -208,9 +208,13 @@ namespace Stride.Engine
             // Update the entities at draw time.
             renderContext.Time = gameTime;
 
-            // Execute Draw step of SceneInstance
-            // This will run entity processors
-            SceneInstance?.Draw(renderContext);
+            // The camera processor needs the graphics compositor
+            using (renderContext.PushTagAndRestore(GraphicsCompositor.Current, GraphicsCompositor))
+            {
+                // Execute Draw step of SceneInstance
+                // This will run entity processors
+                SceneInstance?.Draw(renderContext);
+            }
 
             // Render phase
             // TODO GRAPHICS REFACTOR

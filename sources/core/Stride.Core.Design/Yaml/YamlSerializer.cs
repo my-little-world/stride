@@ -1,4 +1,4 @@
-// Copyright (c) Stride contributors (https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
+// Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 using System;
 using System.IO;
@@ -19,7 +19,7 @@ namespace Stride.Core.Yaml
 
         public static YamlSerializer Default { get; set; } = new YamlSerializer();
 
-        public T Load<T>([NotNull] string filePath, ILogger log = null)
+        public static T Load<T>([NotNull] string filePath, ILogger log = null)
         {
             if (filePath == null) throw new ArgumentNullException(nameof(filePath));
             using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))

@@ -1,4 +1,4 @@
-// Copyright (c) Stride contributors (https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
+// Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 
 using System.Collections.Generic;
@@ -94,7 +94,7 @@ namespace Stride.Particles.Components
         /// <inheritdoc />
         public override void Draw(RenderContext context)
         {
-            float deltaTime = (float) context.Time.Elapsed.TotalSeconds;
+            float deltaTime = (float) context.Time.WarpElapsed.TotalSeconds;
 
             ParticleSystems.Clear();
             foreach (var particleSystemStateKeyPair in ComponentDatas)

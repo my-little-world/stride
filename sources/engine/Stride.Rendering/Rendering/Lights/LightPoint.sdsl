@@ -1,4 +1,4 @@
-// Copyright (c) Stride contributors (https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
+// Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 namespace Stride.Rendering.Lights
 {
@@ -29,7 +29,8 @@ namespace Stride.Rendering.Lights
             float attenuation = ComputeAttenuation(light, streams.PositionWS.xyz, lightVectorNorm);
 
             streams.lightPositionWS = light.PositionWS;
-            streams.lightColor = light.Color * attenuation;
+            streams.lightColor = light.Color;
+            streams.lightAttenuation = attenuation;
             streams.lightDirectionWS = lightVectorNorm;
         }
 

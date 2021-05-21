@@ -1,4 +1,4 @@
-// Copyright (c) Stride contributors (https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
+// Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 using System;
 using Stride.Core;
@@ -19,6 +19,12 @@ namespace Stride.Graphics
             get;
             private set;
         }
+
+        /// <summary>
+        /// Raised when the internal graphics resource gets destroyed. 
+        /// This event is useful when user allocated handles associated with the internal resource need to be released.
+        /// </summary>
+        public event EventHandler<EventArgs> Destroyed;
         
         /// <summary>
         /// Initializes a new instance of the <see cref="GraphicsResourceBase"/> class.

@@ -1,4 +1,4 @@
-// Copyright (c) Stride contributors (https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
+// Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 
 using System.Collections.Generic;
@@ -122,10 +122,14 @@ namespace Stride.Rendering
         {
             renderMesh.MaterialPass = materialPass;
 
-            renderMesh.IsShadowCaster = modelComponent.IsShadowCaster;
+            var isShadowCaster = modelComponent.IsShadowCaster;
             if (modelMaterialInstance != null)
+                isShadowCaster &= modelMaterialInstance.IsShadowCaster;
+
+            if (isShadowCaster != renderMesh.IsShadowCaster)
             {
-                renderMesh.IsShadowCaster = renderMesh.IsShadowCaster && modelMaterialInstance.IsShadowCaster;
+                renderMesh.IsShadowCaster = isShadowCaster;
+                VisibilityGroup.NeedActiveRenderStageReevaluation = true;
             }
         }
 

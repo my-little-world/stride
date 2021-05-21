@@ -1,4 +1,4 @@
-// Copyright (c) Stride contributors (https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
+// Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 
 using System;
@@ -22,9 +22,9 @@ namespace Stride.Input
 
         public Vector2 SurfaceSize => PointerState.SurfaceSize;
         public float SurfaceAspectRatio => PointerState.SurfaceAspectRatio;
-        public IReadOnlySet<PointerPoint> PressedPointers => PointerState.PressedPointers;
-        public IReadOnlySet<PointerPoint> ReleasedPointers => PointerState.ReleasedPointers;
-        public IReadOnlySet<PointerPoint> DownPointers => PointerState.DownPointers;
+        public Core.Collections.IReadOnlySet<PointerPoint> PressedPointers => PointerState.PressedPointers;
+        public Core.Collections.IReadOnlySet<PointerPoint> ReleasedPointers => PointerState.ReleasedPointers;
+        public Core.Collections.IReadOnlySet<PointerPoint> DownPointers => PointerState.DownPointers;
         public event EventHandler<SurfaceSizeChangedEventArgs> SurfaceSizeChanged;
 
         public int Priority { get; set; }

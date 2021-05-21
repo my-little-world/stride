@@ -1,4 +1,4 @@
-// Copyright (c) Stride contributors (https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
+// Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 //
 // Copyright (c) 2010-2013 SharpDX - Alexandre Mutel
@@ -50,6 +50,7 @@ using System.ComponentModel.Design.Serialization;
 using System.Globalization;
 
 using Stride.Core.Mathematics;
+using Half = Stride.Core.Mathematics.Half;
 
 namespace Stride.Core.TypeConverters
 {

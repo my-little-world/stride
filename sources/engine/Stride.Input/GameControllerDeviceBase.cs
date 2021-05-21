@@ -1,4 +1,4 @@
-// Copyright (c) Stride contributors (https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
+// Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 
 using System;
@@ -40,9 +40,9 @@ namespace Stride.Input
         public abstract IReadOnlyList<GameControllerAxisInfo> AxisInfos { get; }
         public abstract IReadOnlyList<GameControllerDirectionInfo> DirectionInfos { get; }
 
-        public IReadOnlySet<int> PressedButtons { get; }
-        public IReadOnlySet<int> ReleasedButtons { get; }
-        public IReadOnlySet<int> DownButtons { get; }
+        public Core.Collections.IReadOnlySet<int> PressedButtons { get; }
+        public Core.Collections.IReadOnlySet<int> ReleasedButtons { get; }
+        public Core.Collections.IReadOnlySet<int> DownButtons { get; }
 
         /// <summary>
         /// Creates the correct amount of states based on the amount of object infos that are set

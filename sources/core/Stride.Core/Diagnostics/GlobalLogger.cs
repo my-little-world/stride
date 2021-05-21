@@ -1,4 +1,4 @@
-// Copyright (c) Stride contributors (https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
+// Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 using System;
 using System.Collections.Generic;
@@ -13,11 +13,6 @@ namespace Stride.Core.Diagnostics
     public sealed class GlobalLogger : Logger
     {
         #region Constants and Fields
-
-        /// <summary>
-        /// By default, the minimum level for a GlobalLogger is info.
-        /// </summary>
-        public const LogMessageType MinimumLevel = LogMessageType.Info;
 
         /// <summary>
         /// Map for all instantiated loggers. Map a module name to a logger.
@@ -123,6 +118,18 @@ namespace Stride.Core.Diagnostics
         /// <returns>An instance of a <see cref="Logger"/></returns>
         public static Logger GetLogger([NotNull] string module)
         {
+            return GetLogger(module, MinimumLevelEnabled);
+        }
+
+        /// <summary>
+        /// Gets the <see cref="GlobalLogger"/> associated to the specified module.
+        /// </summary>
+        /// <param name="module">The module name.</param>
+        /// <param name="minimumLevel">Minimum log level (only applied if new logger instance is created)</param>
+        /// <exception cref="ArgumentNullException">If module name is null</exception>
+        /// <returns>An instance of a <see cref="Logger"/></returns>
+        public static Logger GetLogger([NotNull] string module, LogMessageType minimumLevel)
+        {
             if (module == null)
                 throw new ArgumentNullException(nameof(module));
 
@@ -132,7 +139,7 @@ namespace Stride.Core.Diagnostics
                 if (!MapModuleNameToLogger.TryGetValue(module, out logger))
                 {
                     logger = new GlobalLogger(module);
-                    logger.ActivateLog(MinimumLevel);
+                    logger.ActivateLog(minimumLevel);
                     MapModuleNameToLogger.Add(module, logger);
                 }
             }

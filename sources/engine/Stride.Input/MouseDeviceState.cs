@@ -1,4 +1,4 @@
-﻿// Copyright (c) Stride contributors (https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
+﻿// Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 
 using System;
@@ -34,9 +34,9 @@ namespace Stride.Input
             ReleasedButtons = new ReadOnlySet<MouseButton>(releasedButtons);
         }
 
-        public IReadOnlySet<MouseButton> PressedButtons { get; }
-        public IReadOnlySet<MouseButton> ReleasedButtons { get; }
-        public IReadOnlySet<MouseButton> DownButtons { get; }
+        public Core.Collections.IReadOnlySet<MouseButton> PressedButtons { get; }
+        public Core.Collections.IReadOnlySet<MouseButton> ReleasedButtons { get; }
+        public Core.Collections.IReadOnlySet<MouseButton> DownButtons { get; }
         
         public Vector2 Position { get; set; }
         public Vector2 Delta { get; set; }

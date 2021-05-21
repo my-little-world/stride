@@ -1,4 +1,4 @@
-// Copyright (c) Stride contributors (https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
+// Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 
 using System;
@@ -27,9 +27,9 @@ namespace Stride.Input
             DownKeys = new ReadOnlySet<Keys>(downKeys);
         }
 
-        public IReadOnlySet<Keys> PressedKeys { get; }
-        public IReadOnlySet<Keys> ReleasedKeys { get; }
-        public IReadOnlySet<Keys> DownKeys { get; }
+        public Core.Collections.IReadOnlySet<Keys> PressedKeys { get; }
+        public Core.Collections.IReadOnlySet<Keys> ReleasedKeys { get; }
+        public Core.Collections.IReadOnlySet<Keys> DownKeys { get; }
 
         public abstract string Name { get; }
 

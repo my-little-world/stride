@@ -1,4 +1,4 @@
-// Copyright (c) Stride contributors (https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
+// Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 //
 // Copyright (c) 2010-2012 SharpDX - Alexandre Mutel
@@ -135,6 +135,28 @@ namespace Stride.Graphics
         /// Description of this image.
         /// </summary>
         public ImageDescription Description;
+
+        /// <summary>
+        /// Converts the format of the description and the pixel buffers to sRGB.
+        /// </summary>
+        public void ConvertFormatToSRgb()
+        {
+            Description.Format = Description.Format.ToSRgb();
+            if (PixelBuffers != null)
+                foreach (var pixelBuffer in PixelBuffers)
+                    pixelBuffer.ConvertFormatToSRgb();
+        }
+
+        /// <summary>
+        /// Converts the format of the description and the pixel buffers to non sRGB.
+        /// </summary>
+        public void ConvertFormatToNonSRgb()
+        {
+            Description.Format = Description.Format.ToNonSRgb();
+            if (PixelBuffers != null)
+                foreach (var pixelBuffer in PixelBuffers)
+                    pixelBuffer.ConvertFormatToNonSRgb();
+        }
 
         internal Image()
         {
@@ -664,7 +686,7 @@ namespace Stride.Graphics
                     if (image != null)
                     {
                         if (loadAsSRGB)
-                            image.Description.Format = image.Description.Format.ToSRgb();
+                            image.ConvertFormatToSRgb();                     
 
                         return image;
                     }

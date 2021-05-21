@@ -1,4 +1,4 @@
-// Copyright (c) Stride contributors (https://stride3d.net) and Tebjan Halm
+// Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net) and Tebjan Halm
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information
 using Stride.Core;
 using Stride.Core.Annotations;
@@ -58,16 +58,16 @@ namespace Stride.Engine
             ConnectInstancing();
         }
 
-        private void ConnectInstancing()
+        internal void ConnectInstancing()
         {
-            if (master != null && master.Type is InstancingEntityTransform instancing)
+            if (connectedInstancing == null && master != null && master.Type is InstancingEntityTransform instancing)
             {
                 instancing.AddInstance(this);
                 connectedInstancing = instancing;
             }
         }
 
-        public void DisconnectInstancing()
+        internal void DisconnectInstancing()
         {
             if (connectedInstancing != null)
             {

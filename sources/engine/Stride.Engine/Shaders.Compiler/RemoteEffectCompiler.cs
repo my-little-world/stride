@@ -1,4 +1,4 @@
-// Copyright (c) Stride contributors (https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
+// Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 
 using System.Collections.Generic;
@@ -17,14 +17,16 @@ namespace Stride.Shaders.Compiler
     /// </summary>
     internal class RemoteEffectCompiler : EffectCompilerBase
     {
-        private RemoteEffectCompilerClient remoteEffectCompilerClient;
+        private readonly DatabaseFileProvider database;
+        private readonly RemoteEffectCompilerClient remoteEffectCompilerClient;
 
         /// <inheritdoc/>
         public override IVirtualFileProvider FileProvider { get; set; }
 
-        public RemoteEffectCompiler(IVirtualFileProvider fileProvider, RemoteEffectCompilerClient remoteEffectCompilerClient)
+        public RemoteEffectCompiler(IVirtualFileProvider fileProvider, DatabaseFileProvider database, RemoteEffectCompilerClient remoteEffectCompilerClient)
         {
             FileProvider = fileProvider;
+            this.database = database;
             this.remoteEffectCompilerClient = remoteEffectCompilerClient;
         }
 
@@ -39,7 +41,7 @@ namespace Stride.Shaders.Compiler
         public override ObjectId GetShaderSourceHash(string type)
         {
             var url = GetStoragePathFromShaderType(type);
-            ((DatabaseFileProvider)FileProvider).ContentIndexMap.TryGetValue(url, out var shaderSourceId);
+            database.ContentIndexMap.TryGetValue(url, out var shaderSourceId);
             return shaderSourceId;
         }
 

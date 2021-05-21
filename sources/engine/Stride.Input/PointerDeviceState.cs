@@ -1,4 +1,4 @@
-﻿// Copyright (c) Stride contributors (https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
+﻿// Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 
 using System;
@@ -37,9 +37,9 @@ namespace Stride.Input
         public Vector2 InverseSurfaceSize => invSurfaceSize;
         public float SurfaceAspectRatio => aspectRatio;
 
-        public IReadOnlySet<PointerPoint> PressedPointers { get; }
-        public IReadOnlySet<PointerPoint> ReleasedPointers { get; }
-        public IReadOnlySet<PointerPoint> DownPointers { get; }
+        public Core.Collections.IReadOnlySet<PointerPoint> PressedPointers { get; }
+        public Core.Collections.IReadOnlySet<PointerPoint> ReleasedPointers { get; }
+        public Core.Collections.IReadOnlySet<PointerPoint> DownPointers { get; }
 
         public IPointerDevice SourceDevice;
 

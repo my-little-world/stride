@@ -1,4 +1,4 @@
-// Copyright (c) Stride contributors (https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
+// Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using Microsoft.Build.Evaluation;
 using Stride.Core.Assets.Analysis;
 using Stride.Core.Assets.Diagnostics;
 using Stride.Core.Assets.Templates;
@@ -21,7 +20,6 @@ using Stride.Core.IO;
 using Stride.Core.Reflection;
 using Stride.Core.Serialization;
 using Stride.Core.Yaml;
-using NuGet.ProjectModel;
 
 namespace Stride.Core.Assets
 {
@@ -1172,7 +1170,7 @@ namespace Stride.Core.Assets
                             continue;
                         }
 
-                        var templateDescription = YamlSerializer.Default.Load<TemplateDescription>(file.FullName);
+                        var templateDescription = YamlSerializer.Load<TemplateDescription>(file.FullName);
                         templateDescription.FullPath = file.FullName;
                         Templates.Add(templateDescription);
                     }

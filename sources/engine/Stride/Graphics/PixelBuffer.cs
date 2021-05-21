@@ -1,4 +1,4 @@
-// Copyright (c) Stride contributors (https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
+// Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 //
 // Copyright (c) 2010-2012 SharpDX - Alexandre Mutel
@@ -91,6 +91,18 @@ namespace Stride.Graphics
         /// </summary>
         /// <value>The format.</value>
         public PixelFormat Format { get { return format; } }
+
+        /// <summary>
+        /// Converts the format to sRGB.
+        /// </summary>
+        public void ConvertFormatToSRgb()
+            => format = format.ToSRgb();
+
+        /// <summary>
+        /// Converts the format to non sRGB.
+        /// </summary>
+        public void ConvertFormatToNonSRgb()
+            => format = format.ToNonSRgb();
 
         /// <summary>
         /// Gets the pixel size in bytes.

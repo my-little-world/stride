@@ -1,4 +1,4 @@
-// Copyright (c) Stride contributors (https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
+// Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 using System;
 using System.Diagnostics;
@@ -37,7 +37,7 @@ namespace Stride.LauncherApp.Views
             try
             {
                 // Make sure we open proper HTML pages
-                Process.Start(url.ReplaceLast(".md", ".html"));
+                Process.Start(new ProcessStartInfo(url.ReplaceLast(".md", ".html")) { UseShellExecute = true });
             }
             catch (System.ComponentModel.Win32Exception e)
             {

@@ -1,4 +1,4 @@
-// Copyright (c) Stride contributors (https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
+// Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 
 using System;
@@ -78,7 +78,7 @@ namespace Stride.Assets
         public bool DoubleViewSplashScreen { get; set; } = false;
 
         [DataMember(2000)]
-        [MemberCollection(ReadOnly = true, NotNullItems = true)]
+        [MemberCollection(ReadOnly = false, NotNullItems = true)]
         public List<Configuration> Defaults { get; } = new List<Configuration>();
 
         [DataMember(3000)]

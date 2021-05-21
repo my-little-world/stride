@@ -1,4 +1,4 @@
-// Copyright (c) Stride contributors (https://stride3d.net) and Tebjan Halm
+// Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net) and Tebjan Halm
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 using System;
 using System.Collections.Generic;
@@ -21,8 +21,8 @@ namespace Stride.Rendering
 
         // GPU buffers
         public bool BuffersManagedByUser;
-        public Buffer<Matrix> InstanceWorldBuffer;
-        public Buffer<Matrix> InstanceWorldInverseBuffer;
+        public Buffer InstanceWorldBuffer;
+        public Buffer InstanceWorldInverseBuffer;
     }
 
     public class InstancingRenderFeature : SubRenderFeature
@@ -48,7 +48,7 @@ namespace Stride.Rendering
         /// <inheritdoc/>
         public override void Extract()
         {
-            if (!Context.VisibilityGroup.Tags.TryGetValue(ModelToInstancingMap, out var modelToInstancingMap))
+            if ((Context.VisibilityGroup == null) || (!Context.VisibilityGroup.Tags.TryGetValue(ModelToInstancingMap, out var modelToInstancingMap)))
                 return;
 
             var renderObjectInstancingData = RootRenderFeature.RenderData.GetData(renderObjectInstancingDataInfoKey);
@@ -121,10 +121,14 @@ namespace Stride.Rendering
                     var staticEffectObjectNode = staticObjectNode * effectSlotCount + i;
                     var renderEffect = renderEffects[staticEffectObjectNode];
 
-                    if (renderEffect != null)
+                    // Skip effects not used during this frame
+                    if (renderEffect == null || !renderEffect.IsUsedDuringThisFrame(RenderSystem))
+                        continue;
+
+                    if (instancingData.InstanceCount > 0)
                     {
                         renderEffect.EffectValidator.ValidateParameter(StrideEffectBaseKeys.ModelTransformUsage, instancingData.ModelTransformUsage);
-                        renderEffect.EffectValidator.ValidateParameter(StrideEffectBaseKeys.HasInstancing, instancingData.InstanceCount > 0);
+                        renderEffect.EffectValidator.ValidateParameter(StrideEffectBaseKeys.HasInstancing, instancingData.InstanceCount > 0); 
                     }
                 }
             });

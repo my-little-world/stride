@@ -1,4 +1,4 @@
-// Copyright (c) Stride contributors (https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
+// Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 using System;
 using Stride.Core;
@@ -145,6 +145,9 @@ namespace Stride.Editor.EditorGame.Game
         /// <inheritdoc />
         protected override void Initialize()
         {
+            // Database is needed by effect compiler cache
+            MicrothreadLocalDatabases.MountCommonDatabase();
+
             base.Initialize();
 
             // TODO: the physics system should not be registered by default here!

@@ -1,4 +1,4 @@
-// Copyright (c) Stride contributors (https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
+// Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 //
 // Copyright (c) 2010-2013 SharpDX - Alexandre Mutel
@@ -269,7 +269,7 @@ namespace Stride.Core.Mathematics
         /// <param name="result">[OutAttribute] true if the specified Point is contained within this rectangle; false otherwise.</param>
         public void Contains(ref Vector2 value, out bool result)
         {
-            result = (X <= value.X) && (value.X < Right) && (Y <= value.Y) && (value.Y < Bottom);
+            result = value.X >= this.X && value.X <= Right && value.Y >= this.Y && value.Y <= Bottom;
         }
 
         /// <summary>Determines whether this rectangle entirely contains a specified rectangle.</summary>
@@ -295,7 +295,7 @@ namespace Stride.Core.Mathematics
         /// <returns><c>true</c> if point is inside <see cref="RectangleF"/>, otherwise <c>false</c>.</returns>
         public bool Contains(float x, float y)
         {
-            return (x >= this.X && x <= Right && y >= this.Y && y <= Bottom);
+            return x >= this.X && x <= Right && y >= this.Y && y <= Bottom;
         }
 
         /// <summary>

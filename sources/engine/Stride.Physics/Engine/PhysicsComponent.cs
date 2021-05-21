@@ -1,4 +1,4 @@
-// Copyright (c) Stride contributors (https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
+// Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 
 using System;
@@ -32,12 +32,6 @@ namespace Stride.Engine
     public abstract class PhysicsComponent : ActivableEntityComponent
     {
         protected static Logger logger = GlobalLogger.GetLogger("PhysicsComponent");
-
-        static PhysicsComponent()
-        {
-            // Preload proper libbulletc native library (depending on CPU type)
-            NativeLibrary.PreloadLibrary("libbulletc.dll", typeof(PhysicsComponent));
-        }
 
         protected PhysicsComponent()
         {

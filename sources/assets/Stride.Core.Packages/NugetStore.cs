@@ -1,4 +1,4 @@
-// Copyright (c) Stride contributors (https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
+// Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 
 using System;
@@ -57,14 +57,6 @@ namespace Stride.Core.Packages
         /// <param name="oldRootDirectory">The location of the Nuget store.</param>
         public NugetStore(string oldRootDirectory)
         {
-            // Workaround for https://github.com/NuGet/Home/issues/8120
-            //  set timeout to something much higher than 100 sec
-            var defaultRequestTimeoutField = typeof(HttpSourceRequest).GetField(nameof(HttpSourceRequest.DefaultRequestTimeout), BindingFlags.Static | BindingFlags.Public);
-            if (defaultRequestTimeoutField != null)
-            {
-                defaultRequestTimeoutField.SetValue(null, TimeSpan.FromMinutes(60));
-            }
-
             // Used only for versions before 3.0
             this.oldRootDirectory = oldRootDirectory;
 
@@ -283,7 +275,7 @@ namespace Stride.Core.Packages
         /// <remarks>It is safe to call it concurrently be cause we operations are done using the FileLock.</remarks>
         /// <param name="packageId">Name of package to install.</param>
         /// <param name="version">Version of package to install.</param>
-        public async Task<NugetLocalPackage> InstallPackage(string packageId, PackageVersion version, ProgressReport progress)
+        public async Task<NugetLocalPackage> InstallPackage(string packageId, PackageVersion version, IEnumerable<string> targetFrameworks, ProgressReport progress)
         {
             using (GetLocalRepositoryLock())
             {
@@ -311,6 +303,10 @@ namespace Stride.Core.Packages
                     {
                         var installPath = SettingsUtility.GetGlobalPackagesFolder(settings);
 
+                        // In case it's a package without any TFM (i.e. Visual Studio plugin), we still need to specify one
+                        if (!targetFrameworks.Any())
+                            targetFrameworks = new string[] { "net5.0" };
+
                         // Old version expects to be installed in GamePackages
                         if (packageId == "Xenko" && version < new PackageVersion(3, 0, 0, 0) && oldRootDirectory != null)
                         {
@@ -329,13 +325,6 @@ namespace Stride.Core.Packages
                                     LibraryRange = new LibraryRange(packageId, new VersionRange(version.ToNuGetVersion()), LibraryDependencyTarget.Package),
                                 }
                             },
-                            TargetFrameworks =
-                            {
-                                new TargetFrameworkInformation
-                                {
-                                    FrameworkName = NuGetFramework.Parse("net472"),
-                                }
-                            },
                             RestoreMetadata = new ProjectRestoreMetadata
                             {
                                 ProjectPath = projectPath,
@@ -343,13 +332,17 @@ namespace Stride.Core.Packages
                                 ProjectStyle = ProjectStyle.PackageReference,
                                 ProjectUniqueName = projectPath,
                                 OutputPath = Path.Combine(Path.GetTempPath(), $"StrideLauncher-{packageId}-{version.ToString()}"),
-                                OriginalTargetFrameworks = new[] { "net472" },
+                                OriginalTargetFrameworks = targetFrameworks.ToList(),
                                 ConfigFilePaths = settings.GetConfigFilePaths(),
                                 PackagesPath = installPath,
                                 Sources = SettingsUtility.GetEnabledSources(settings).ToList(),
                                 FallbackFolders = SettingsUtility.GetFallbackPackageFolders(settings).ToList()
                             },
                         };
+                        foreach (var targetFramework in targetFrameworks)
+                        {
+                            spec.TargetFrameworks.Add(new TargetFrameworkInformation { FrameworkName = NuGetFramework.Parse(targetFramework) });
+                        }
 
                         using (var context = new SourceCacheContext { MaxAge = DateTimeOffset.UtcNow })
                         {

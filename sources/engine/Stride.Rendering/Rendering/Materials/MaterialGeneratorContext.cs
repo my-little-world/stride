@@ -1,4 +1,4 @@
-// Copyright (c) Stride contributors (https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
+// Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 
 using System;
@@ -48,7 +48,8 @@ namespace Stride.Rendering.Materials
         /// Initializes a new instance of <see cref="MaterialGeneratorContext"/>.
         /// </summary>
         /// <param name="material"></param>
-        public MaterialGeneratorContext(Material material = null)
+        public MaterialGeneratorContext(Material material = null, GraphicsDevice graphicsDevice = null)
+            : base(graphicsDevice)
         {
             this.Material = material ?? new Material();
 

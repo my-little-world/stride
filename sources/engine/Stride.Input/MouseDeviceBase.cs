@@ -1,4 +1,4 @@
-// Copyright (c) Stride contributors (https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
+// Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 
 using System.Collections.Generic;
@@ -21,9 +21,9 @@ namespace Stride.Input
 
         public abstract bool IsPositionLocked { get; }
 
-        public IReadOnlySet<MouseButton> PressedButtons => MouseState.PressedButtons;
-        public IReadOnlySet<MouseButton> ReleasedButtons => MouseState.ReleasedButtons;
-        public IReadOnlySet<MouseButton> DownButtons => MouseState.DownButtons;
+        public Core.Collections.IReadOnlySet<MouseButton> PressedButtons => MouseState.PressedButtons;
+        public Core.Collections.IReadOnlySet<MouseButton> ReleasedButtons => MouseState.ReleasedButtons;
+        public Core.Collections.IReadOnlySet<MouseButton> DownButtons => MouseState.DownButtons;
 
         public Vector2 Position => MouseState.Position;
         public Vector2 Delta => MouseState.Delta;

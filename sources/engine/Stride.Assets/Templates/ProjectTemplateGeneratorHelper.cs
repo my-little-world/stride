@@ -1,4 +1,4 @@
-// Copyright (c) Stride contributors (https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
+// Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 using System;
 using System.Collections.Generic;
@@ -15,6 +15,7 @@ using Stride.Graphics;
 using Stride.Shaders.Parser.Mixins;
 using Stride.Core.VisualStudio;
 using Stride.Core.Extensions;
+using System.Runtime.InteropServices;
 
 namespace Stride.Assets.Templates
 {
@@ -117,6 +118,12 @@ namespace Stride.Assets.Templates
 
                     // We are going to regenerate this platform, so we are removing it before
                     package.Session.Projects.Remove(existingProject);
+                }
+
+                if (platform.Platform.Type == PlatformType.Windows)
+                {
+                    var isNETFramework = RuntimeInformation.FrameworkDescription.StartsWith(".NET Framework");
+                    AddOption(parameters, "TargetFramework", isNETFramework ? "net461" : "net5.0-windows");
                 }
 
                 var projectDirectory = Path.GetDirectoryName(projectFullPath.ToWindowsPath());
@@ -273,6 +280,12 @@ namespace Stride.Assets.Templates
 
             AddOption(parameters, "ProjectType", projectType);
             AddOption(parameters, "Namespace", parameters.Namespace ?? Utilities.BuildValidNamespaceName(package.Meta.Name));
+
+            if (platformType == PlatformType.Windows)
+            {
+                var isNETFramework = RuntimeInformation.FrameworkDescription.StartsWith(".NET Framework");
+                AddOption(parameters, "TargetFramework", isNETFramework ? "net461" : "net5.0-windows");
+            }
 
             return projectTemplate;
         }
