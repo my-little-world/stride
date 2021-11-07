@@ -25,6 +25,8 @@ using Stride.Core.Assets.Editor.Services;
 using Stride.Core.Assets.Editor.Settings;
 using Stride.Core.Assets.Editor.ViewModel;
 using Stride.Core;
+using Stride.Core.Translation;
+using Stride.Core.Translation.Providers;
 using Stride.Core.Diagnostics;
 using Stride.Core.Extensions;
 using Stride.Core.IO;
@@ -33,8 +35,6 @@ using Stride.Core.Presentation.Interop;
 using Stride.Core.Presentation.View;
 using Stride.Core.Presentation.ViewModel;
 using Stride.Core.Presentation.Windows;
-using Stride.Core.Translation;
-using Stride.Core.Translation.Providers;
 using Stride.Core.VisualStudio;
 using Stride.Assets.Presentation;
 using Stride.Editor.Build;
@@ -42,7 +42,6 @@ using Stride.Editor.Engine;
 using Stride.Editor.Preview;
 using Stride.GameStudio.View;
 using Stride.Graphics;
-using Stride.Metrics;
 using Stride.PrivacyPolicy;
 using EditorSettings = Stride.Core.Assets.Editor.Settings.EditorSettings;
 using MessageBox = System.Windows.MessageBox;
@@ -82,90 +81,77 @@ namespace Stride.GameStudio
             EditorSettings.Initialize();
             Thread.CurrentThread.Name = "Main thread";
 
-            // Install Metrics for the editor
-            using (StrideGameStudio.MetricsClient = new MetricsClient(CommonApps.StrideEditorAppId))
+            try
             {
-                try
+                // Environment.GetCommandLineArgs correctly process arguments regarding the presence of '\' and '"'
+                var args = Environment.GetCommandLineArgs().Skip(1).ToList();
+                var startupSessionPath = StrideEditorSettings.StartupSession.GetValue();
+                var lastSessionPath = EditorSettings.ReloadLastSession.GetValue() ? mru.MostRecentlyUsedFiles.FirstOrDefault() : null;
+                var initialSessionPath = !UPath.IsNullOrEmpty(startupSessionPath) ? startupSessionPath : lastSessionPath?.FilePath;
+
+                // Handle arguments
+                for (var i = 0; i < args.Count; i++)
                 {
-                    // Environment.GetCommandLineArgs correctly process arguments regarding the presence of '\' and '"'
-                    var args = Environment.GetCommandLineArgs().Skip(1).ToList();
-                    var startupSessionPath = StrideEditorSettings.StartupSession.GetValue();
-                    var lastSessionPath = EditorSettings.ReloadLastSession.GetValue() ? mru.MostRecentlyUsedFiles.FirstOrDefault() : null;
-                    var initialSessionPath = !UPath.IsNullOrEmpty(startupSessionPath) ? startupSessionPath : lastSessionPath?.FilePath;
-
-                    // Handle arguments
-                    for (var i = 0; i < args.Count; i++)
+                    if (args[i] == "/LauncherWindowHandle")
                     {
-                        if (args[i] == "/LauncherWindowHandle")
-                        {
-                            windowHandle = new IntPtr(long.Parse(args[++i]));
-                        }
-                        else if (args[i] == "/NewProject")
-                        {
-                            initialSessionPath = null;
-                        }
-                        else if (args[i] == "/DebugEditorGraphics")
-                        {
-                            EmbeddedGame.DebugMode = true;
-                        }
-                        else if (args[i] == "/RenderDoc")
-                        {
-                            // TODO: RenderDoc is not working here (when not in debug)
-                            GameStudioPreviewService.DisablePreview = true;
-                            renderDocManager = new RenderDocManager();
-                            renderDocManager.Initialize();
-                        }
-                        else if (args[i] == "/Reattach")
-                        {
-                            var debuggerProcessId = int.Parse(args[++i]);
+                        windowHandle = new IntPtr(long.Parse(args[++i]));
+                    }
+                    else if (args[i] == "/NewProject")
+                    {
+                        initialSessionPath = null;
+                    }
+                    else if (args[i] == "/DebugEditorGraphics")
+                    {
+                        EmbeddedGame.DebugMode = true;
+                    }
+                    else if (args[i] == "/RenderDoc")
+                    {
+                        // TODO: RenderDoc is not working here (when not in debug)
+                        GameStudioPreviewService.DisablePreview = true;
+                        renderDocManager = new RenderDocManager();
+                        renderDocManager.Initialize();
+                    }
+                    else if (args[i] == "/Reattach")
+                    {
+                        var debuggerProcessId = int.Parse(args[++i]);
 
-                            if (!System.Diagnostics.Debugger.IsAttached)
+                        if (!System.Diagnostics.Debugger.IsAttached)
+                        {
+                            using (var debugger = VisualStudioDebugger.GetByProcess(debuggerProcessId))
                             {
-                                using (var debugger = VisualStudioDebugger.GetByProcess(debuggerProcessId))
-                                {
-                                    debugger?.Attach();
-                                }
+                                debugger?.Attach();
                             }
                         }
-                        else if (args[i] == "/RecordEffects")
-                        {
-                            GameStudioBuilderService.GlobalEffectLogPath = args[++i];
-                        }
-                        else
-                        {
-                            initialSessionPath = args[i];
-                        }
                     }
-                    RuntimeHelpers.RunModuleConstructor(typeof(Asset).Module.ModuleHandle);
-
-                    //listen to logger for crash report
-                    GlobalLogger.GlobalMessageLogged += GlobalLoggerOnGlobalMessageLogged;
-
-                    mainDispatcher = Dispatcher.CurrentDispatcher;
-                    mainDispatcher.InvokeAsync(() => Startup(initialSessionPath));
-
-                    using (new WindowManager(mainDispatcher))
+                    else if (args[i] == "/RecordEffects")
                     {
-                        app = new App { ShutdownMode = ShutdownMode.OnExplicitShutdown };
-                        app.Activated += (sender, eventArgs) =>
-                        {
-                            StrideGameStudio.MetricsClient?.SetActiveState(true);
-                        };
-                        app.Deactivated += (sender, eventArgs) =>
-                        {
-                            StrideGameStudio.MetricsClient?.SetActiveState(false);
-                        };
-
-                        app.InitializeComponent();
-                        app.Run();
+                        GameStudioBuilderService.GlobalEffectLogPath = args[++i];
                     }
+                    else
+                    {
+                        initialSessionPath = args[i];
+                    }
+                }
+                RuntimeHelpers.RunModuleConstructor(typeof(Asset).Module.ModuleHandle);
 
-                    renderDocManager?.RemoveHooks();
-                }
-                catch (Exception e)
+                //listen to logger for crash report
+                GlobalLogger.GlobalMessageLogged += GlobalLoggerOnGlobalMessageLogged;
+
+                mainDispatcher = Dispatcher.CurrentDispatcher;
+                mainDispatcher.InvokeAsync(() => Startup(initialSessionPath));
+
+                using (new WindowManager(mainDispatcher))
                 {
-                    HandleException(e, 0);
+                    app = new App { ShutdownMode = ShutdownMode.OnExplicitShutdown };
+                    app.InitializeComponent();
+                    app.Run();
                 }
+
+                renderDocManager?.RemoveHooks();
+            }
+            catch (Exception e)
+            {
+                HandleException(e, 0);
             }
         }
 
@@ -181,27 +167,6 @@ namespace Stride.GameStudio
             }
         }
 
-        private class CrashReportArgs
-        {
-            public int Location;
-            public Exception Exception;
-            public string[] Log;
-            public string ThreadName;
-        }
-
-        private static void CrashReport(object data)
-        {
-            var args = (CrashReportArgs)data;
-
-            //Stop the game studio rendering thread
-            mainDispatcher?.InvokeAsync(() => Thread.CurrentThread.Join());
-
-            CrashReportHelper.SendReport(args.Exception.FormatFull(), args.Location, args.Log, args.ThreadName);
-
-            //Make sure we stop now.. more exceptions might come but we just grab the first one
-            Environment.Exit(0);
-        }
-
         private static void HandleException(Exception exception, int location)
         {
             if (exception == null) return;
@@ -212,12 +177,6 @@ namespace Stride.GameStudio
 
             // In case assembly resolve was not done yet, disable it altogether
             NuGetAssemblyResolver.DisableAssemblyResolve();
-
-            var englishCulture = new CultureInfo("en-US");
-            var crashLogThread = new Thread(CrashReport) { CurrentUICulture = englishCulture, CurrentCulture = englishCulture };
-            crashLogThread.SetApartmentState(ApartmentState.STA);
-            crashLogThread.Start(new CrashReportArgs { Exception = exception, Location = location, Log = LogRingbuffer.ToArray(), ThreadName = Thread.CurrentThread.Name });
-            crashLogThread.Join();
         }
 
         [SecurityCritical]
@@ -363,7 +322,7 @@ namespace Stride.GameStudio
             var dispatcherService = new DispatcherService(Dispatcher.CurrentDispatcher);
             var dialogService = new StrideDialogService(dispatcherService, StrideGameStudio.EditorName);
             var pluginService = new PluginService();
-            var services = new List<object>{ new DispatcherService(Dispatcher.CurrentDispatcher), dialogService, pluginService };
+            var services = new List<object> { new DispatcherService(Dispatcher.CurrentDispatcher), dialogService, pluginService };
             if (renderDocManager != null)
                 services.Add(renderDocManager);
             var serviceProvider = new ViewModelServiceProvider(services);

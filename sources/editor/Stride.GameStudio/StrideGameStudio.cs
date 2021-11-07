@@ -5,7 +5,6 @@
 using System;
 using System.Runtime.InteropServices;
 using Stride.Core.Annotations;
-using Stride.Metrics;
 
 namespace Stride.GameStudio
 {
@@ -40,6 +39,5 @@ namespace Stride.GameStudio
         [NotNull]
         public static string ReportIssueUrl => "https://github.com/stride3d/stride/issues/";
 
-        public static MetricsClient MetricsClient;
     }
 }
