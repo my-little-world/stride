@@ -5,7 +5,9 @@
     <TargetFramework>$(StrideEditorTargetFramework)</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-	  <PackageReference Include="Mono.TextTemplating" Version="2.2.1" />
+	  <!-- TODO: Adjust the template generator to work with Mono.TextTemplating, so we can remove Stride.Mono.TextTemplating -->
+	  <!--<PackageReference Include="Mono.TextTemplating" Version="2.2.1" />-->
+	  <PackageReference Include="Stride.Mono.TextTemplating" Version="2.1.0-preview-0009-g0d0b6db3ca" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\core\Stride.Core.Design\Stride.Core.Design.csproj" />
