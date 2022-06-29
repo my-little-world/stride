@@ -118,7 +118,7 @@ Example of use:
     </GenerateVersionFile>
 
     <Message Text="Done preparing build for version $(StridePackageVersion)"/>
-    <TeamCitySetBuildNumber BuildNumber="$(StridePackageVersion)" Condition="'$(TEAMCITY_BUILD_PROPERTIES_FILE)' != '' " />
+    <Message Text="##teamcity[buildNumber '$(StridePackageVersion)']" Importance="High" Condition="'$(TEAMCITY_BUILD_PROPERTIES_FILE)' != '' " />
   </Target>
   <PropertyGroup>
     <_StridePackageTargetPrerequisitesInstaller Condition="'$(StrideBuildPrerequisitesInstaller)' == 'true'">PrerequisitesInstaller</_StridePackageTargetPrerequisitesInstaller>
@@ -252,6 +252,7 @@ Example of use:
     </CreateItem>
     <!-- Restore NuGet packages -->
     <Message Importance="High" Text="Restoring NuGet packages"/>
+    <MSBuild Targets="Restore" Projects="$(MSBuildThisFileDirectory)Stride.sln" />
     <MSBuild Targets="Restore" Projects="$(MSBuildThisFileDirectory)Stride.Tests.%(StrideTestCategoriesItem.Identity).slnf" />
     <!-- Build -->
     <Message Importance="High" Text="Building unit tests"/>
